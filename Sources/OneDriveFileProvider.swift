@@ -300,10 +300,9 @@ open class OneDriveFileProvider: HTTPFileProvider, FileProviderSharing {
             if let next = token.flatMap(URL.init(string:)) {
                 url = next
             } else {
-                let bURL = self.baseURL!.appendingPathComponent(self.route.drivePath).appendingPathComponent("root/search")
+                let queryString = queryStr?.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? ""
+                let bURL = self.baseURL!.appendingPathComponent(self.route.drivePath).appendingPathComponent("root/search(q='\(queryString)')")
                 var components = URLComponents(url: bURL, resolvingAgainstBaseURL: false)!
-                let qItem = URLQueryItem(name: "q", value: (queryStr ?? "*"))
-                components.queryItems = [qItem]
                 if recursive {
                     components.queryItems?.append(URLQueryItem(name: "expand", value: "children"))
                 }
@@ -311,6 +310,7 @@ open class OneDriveFileProvider: HTTPFileProvider, FileProviderSharing {
             }
             
             var request = URLRequest(url: url)
+            request.setValue(authentication: self.credential, with: .oAuth2)
             request.httpMethod = "GET"
             return request
         }, pageHandler: { [weak self] (data, progress) -> (files: [FileObject], error: Error?, newToken: String?) in
