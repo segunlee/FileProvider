@@ -353,15 +353,15 @@ open class HTTPFileProvider: NSObject, FileProviderBasicRemote, FileProviderOper
         return upload(path, request: request, stream: stream, size: Int64(data.count), operation: operation, completionHandler: completionHandler)
     }
     
-    internal func request(for operation: FileOperationType, overwrite: Bool = false, attributes: [URLResourceKey: Any] = [:]) -> URLRequest {
+    open func request(for operation: FileOperationType, overwrite: Bool = false, attributes: [URLResourceKey: Any] = [:]) -> URLRequest {
         fatalError("HTTPFileProvider is an abstract class. Please implement \(#function) in subclass.")
     }
     
-    internal func serverError(with code: FileProviderHTTPErrorCode, path: String?, data: Data?) -> FileProviderHTTPError {
+    open func serverError(with code: FileProviderHTTPErrorCode, path: String?, data: Data?) -> FileProviderHTTPError {
         fatalError("HTTPFileProvider is an abstract class. Please implement \(#function) in subclass.")
     }
     
-    internal func multiStatusError(operation: FileOperationType, data: Data) -> FileProviderHTTPError? {
+    open func multiStatusError(operation: FileOperationType, data: Data) -> FileProviderHTTPError? {
         // WebDAV will override this function
         return nil
     }
